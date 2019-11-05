@@ -1,29 +1,14 @@
 package com.shaneen.blog.blog.models;
 
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-
-import javax.print.DocFlavor;
 import java.util.Date;
 
-@Entity
-@Table(name = "posts")
-public class Post {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Post{
+
     private Long id;
-
-    @Column(nullable = false, length = 300)
     private String title;
-
-    @Lob
-    @Column(nullable = false)
     private String body;
-
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User author;
-
-    @Column(nullable = false)
     private Date date = new Date();
 
     public Long getId() {
@@ -37,7 +22,6 @@ public class Post {
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -66,7 +50,6 @@ public class Post {
         this.date = date;
     }
     public Post() {
-
     }
     public Post(Long id, String title, String body, User author) {
         this.id = id;
@@ -76,7 +59,9 @@ public class Post {
     }
     @Override
     public String toString() {
-        return "Post []";
+        return "Post[]";
     }
+
+
 
 }

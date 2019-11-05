@@ -1,66 +1,32 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
-<head th:fragment="site-head">
-    <meta charset="UTF-8" />
-    <title>Shaneen's Blog</title>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-
-
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-
-
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-
-
-    <link rel="icon" href="../public/img/favicon.ico" th:href="@{/img/favicon.ico}" />
-
-    <link rel="stylesheet" href="../public/css/styles.css" th:href="@{/css/styles.css}" />
-
-
-        <script src="../public/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>
-
-    <script src="../public/js/blog-scripts.js" th:src="@{/js/blog-scripts.js}"></script>
-
+<html xmlns:th=“http://www.thymeleaf.org”>
+<head th:fragment=“site-head”>
+    <meta charset=“UTF-8” />
+    <link rel=“stylesheet” href=“../public/css/styles.css” th:href=“@{/css/styles.css}” />
+    <link rel=“icon” href=“../public/img/favicon.ico” th:href=“@{/img/favicon.ico}” />
+    <script src=“../public/js/jquery-3.1.0.min.js” th:src=“@{/js/jquery-3.1.0.min.js}”></script>
+    <script src=“../public/js/blog-scripts.js” th:src=“@{/js/blog-scripts.js}”></script>
+    <meta th:include=“this :: head” th:remove=“tag”/>
 </head>
 <body>
-<header th:fragment="site-header" th:remove="tag">
-    <header>
-        <a href="index.html" th:href="@{/}"><img src="../public/img/site-logo.png" th:src="@{/img/site-logo.png}" /></a>
-        <a href="index.html" th:href="@{/}">Home</a>
-        <a href="posts/index.html" th:href="@{/posts}">Posts</a>
-        <span sec:authorize="isAuthenticated()">
-				<a href="posts/create.html" th:href="@{/posts/create}">Create Post</a>
-				<a sec:authorize="hasAuthority('ADMIN')" href="users/index.html" th:href="@{/users}">Users</a>
-			</span>
-        <div id="logged-in-info">
-            <div sec:authorize="isAuthenticated()">
-					<span>Hello, <b sec:authentication="name"></b>
-						Name: <span sec:authentication="principal.authorities"></span>
-					</span>
-                <a ref="#" th:href="@{/users/logout}"><span class="fa fa-sign-out"></span>&nbsp;[Logout]</a>
-            </div>
-            <div sec:authorize="!isAuthenticated()">
-                <a href="users/login.html" th:href="@{/users/login}">Login</a>
-                <a href="users/register.html" th:href="@{/users/register}">Register</a>
-            </div>
-        </div>
-    </header>
-
-    <ul id="messages" th:with="notifyMessages=${session[T(spring.blog.services.NotificationServiceImpl).NOTIFY_MSG_SESSION_KEY]}">
-        <li th:each="msg : ${notifyMessages}" th:text="${msg.text}" th:class="${msg.type.toString().toLowerCase()}"></li>
-        <span th:if="${notifyMessages}" th:remove="all" th:text="${#session.removeAttribute(T(spring.blog.services.NotificationServiceImpl).NOTIFY_MSG_SESSION_KEY)}"></span>
-    </ul>
-
+<header th:fragment=“site-header”>
+    <a href=“index.html” th:href=“@{/}”><img src="../public/img/site-logo.png" th:src="@{/img/site-logo.png}" /></a>
+    <a href="index.html" th:href="@{/}">Home</a>
+    <a href="users/login.html" th:href="@{/users/login}">Login</a>
+    <a href="users/register.html" th:href="@{/users/register}">Register</a>
+    <a href="posts/index.html" th:href="@{/posts}">Posts</a>
+    <a href="posts/create.html" th:href="@{/posts/create}">Create Post</a>
+    <a href="users/index.html" th:href="@{/users}">Users</a>
+    <div id="logged-in-info"> <span>Hello, <b>(user)</b></span>
+        <form method="post" th:action="@{/users/logout}">
+            <input type="submit" value="Logout"/>
+        </form>
+    </div>
 </header>
 <h1>Welcome</h1>
-<p>Welcome to the Shaneen's Blog.</p>
-<footer th:fragment="site-footer"></footer>
+<p>Welcome to Shaneen's Blog</p>
+<footer th:fragment="site-footer">
+    &copy; Shaneen's Blog
+</footer>
 </body>
 </html>
