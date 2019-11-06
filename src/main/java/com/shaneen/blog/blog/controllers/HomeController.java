@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class HomeController{
     @Autowired
     private PostService postService;
+    // just work
 
     @RequestMapping("/")
     public String index(Model model) {
