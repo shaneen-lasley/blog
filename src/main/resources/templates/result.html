@@ -7,8 +7,15 @@
 <body>
 <h3>Welcome to Shaneen's Blog</h3>
 <h4>Title:</h4>
-<p th:text="${title}" />
-<h4>Content:</h4>
-<p th:text="${content}" />
+<p th:each="post : ${posts}">
+    <h4>ID:</h4>
+    <div th:text="${post.id}"></div>
+    <h4>Title</h4>
+    <div th:text="${post.title}"></div>
+    <h4>Content</h4>
+    <div th:text="${post.content}"></div>
+    <div>---------------------------------------------------------------------------------------</div>
+</p>
+
 </body>
 </html>
