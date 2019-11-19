@@ -3,6 +3,8 @@ package com.shaneen.blog.blog.services;
 
 import com.shaneen.blog.blog.models.Post;
 import com.shaneen.blog.blog.models.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PostServiceStubImpl implements PostService {
+
     private List<Post> posts = new ArrayList<Post>() {{
         add(new Post(1L, "First Post", "<p>Line #1.</p><p>Line #2</p>", null));
         add(new Post(2L, "Second Post",
@@ -73,5 +76,9 @@ public class PostServiceStubImpl implements PostService {
             }
         }
         throw new RuntimeException("Post not found: " + id);
+    }
+    @Override
+    public Page<Post> findAll(Pageable pageable) {
+        return null;
     }
 }
