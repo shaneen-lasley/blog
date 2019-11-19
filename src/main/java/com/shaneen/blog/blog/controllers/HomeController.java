@@ -1,45 +1,29 @@
 package com.shaneen.blog.blog.controllers;
 
-
-
-import com.shaneen.blog.blog.domain.PostEntity;
-import com.shaneen.blog.blog.form.Post;
-
-import com.shaneen.blog.blog.repository.PostRepository;
+import com.shaneen.blog.blog.models.Post;
+import com.shaneen.blog.blog.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class HomeController {
-
     @Autowired
-    private PostRepository postRepository;
+    private PostService postService;
 
-    @RequestMapping(value = "/", method= RequestMethod.GET)
-    public String index(Post post) {
+    @RequestMapping("/")
+    public String index(Model model) {
+        List<Post> latest5Posts = postService.findLatest5();
+        model.addAttribute("latest5Posts", latest5Posts);
+
+        List<Post> latest3Posts = latest5Posts.stream()
+                .limit(3).collect(Collectors.toList());
+        model.addAttribute("latest3Posts", latest3Posts);
+
         return "index";
     }
-
-    @RequestMapping(value = "/", method=RequestMethod.POST)
-    public String addNewPost(@Valid Post post, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            return "index";
-        }
-        postRepository.save(new PostEntity(post.getTitle(), post.getContent()));
-        model.addAttribute("posts", postRepository.findAll());
-        return "redirect:result";
-    }
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String showAllPosts(Model model) {
-        model.addAttribute("posts", postRepository.findAll());
-        return "result";
-    }
-
-
 }
