@@ -12,10 +12,10 @@ public class Customer implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "firstname")
+    @Column(name = "firstName")
     private String firstName;
 
-    @Column(name = "lastname")
+    @Column(name = "lastName")
     private String lastName;
 
     protected Customer() {

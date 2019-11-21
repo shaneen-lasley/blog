@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout::site-head">
-    <title>Welcome to Spring MVC Blog</title>
+<head th:replace="layout :: head">
+    <title>Welcome to Shaneen's Blog</title>
 </head>
 <body>
 <header th:replace="layout::site-header"></header>
@@ -28,12 +28,7 @@
     <div class="row">
         <div class="col-md-12">
             <ul class="pagination justify-content-center">
-                <!-- Send this if you want to let users to change page size property
-                <li th:class="${posts.number eq 0} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:if="${not posts.first}" th:href="@{${'/posts'}(page=${posts.number-1},size=${posts.size})}">Previous</a>
-                    <a class="page-link" th:if="${posts.first}" href="#">Previous</a>
-                </li>
-                -->
+
 
                 <li th:class="${users.number eq 0} ? 'page-item disabled' : 'page-item'">
                     <a class="page-link" th:if="${not users.first}" th:href="@{${'/users'}(page=${users.number-1})}">&laquo;</a>
@@ -53,11 +48,11 @@
                     <a class="page-link" th:if="${not users.last}" th:href="@{${'/users'}(page=${users.number+1})}">&raquo;</a>
                     <a class="page-link" th:if="${users.last}" href="#">&raquo;</a>
                 </li>
-            </ul><!-- ./ pagination -->
-        </div><!-- ./ col-md-7 -->
-    </div><!-- ./ row -->
-</div><!-- ./ container -->
-<!-- The footer coming from layout -->
-<footer th:replace="layout::site-footer"></footer>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="layout :: footer"></footer>
 </body>
 </html>

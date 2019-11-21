@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="layout::site-head">
+<head th:replace="layout :: head">
     <title>Edit Post</title>
 </head>
 
 <body>
-<header th:replace="layout::site-header"></header>
+<header th:replace="layout :: header"></header>
 
 <h2>Edit Post</h2>
 
@@ -29,11 +29,11 @@
         </div><!-- Submit Button -->
         <div class="form-group">
             <div th:class="${successMessage} ? 'alert alert-success' : ''" th:text="${successMessage}"></div>
-        </div><!-- Success message -->
+        </div>
     </form>
 </div>
 
-<footer th:replace="layout::site-footer"></footer>
+<footer th:replace="layout :: footer"></footer>
 </body>
 
 </html>
