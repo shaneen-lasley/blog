@@ -1,20 +1,14 @@
 package com.shaneen.blog.blog.services;
 
 import com.shaneen.blog.blog.models.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
-    boolean authenticate(String userName, String password);
+    Optional<User> findByUsername(String username);
 
-    List<User> findAll();
-    Page<User>findAll(Pageable pageable);
-    User findByUserName(String userName);
-    User findById(Long id);
-    User create(User user);
-    User edit(User user);
-    void deleteById(Long id);
+    Optional<User> findByEmail(String email);
+
+    User save(User user);
 }

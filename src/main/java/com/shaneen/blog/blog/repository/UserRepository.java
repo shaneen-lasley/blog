@@ -1,11 +1,15 @@
 package com.shaneen.blog.blog.repository;
 
-
 import com.shaneen.blog.blog.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.query.Param;
 
-@Repository
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUserName(String userName);
+    Optional<User> findByEmail(@Param("email") String email);
+
+    Optional<User> findByUsername(@Param("username") String username);
 }
+
+

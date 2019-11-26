@@ -2,28 +2,34 @@ package com.shaneen.blog.blog.controllers;
 
 import com.shaneen.blog.blog.models.Post;
 import com.shaneen.blog.blog.services.PostService;
+import com.shaneen.blog.blog.util.Pager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
+
+    private final PostService postService;
+
     @Autowired
-    private PostService postService;
+    public HomeController(PostService postService) {
+        this.postService = postService;
+    }
 
-    @RequestMapping("/")
-    public String index(Model model) {
-        List<Post> latest5Posts = postService.findLatest5();
-        model.addAttribute("latest5Posts", latest5Posts);
+    @GetMapping("/home")
+    public String home(@RequestParam(defaultValue = "0") int page,
+                       Model model) {
 
-        List<Post> latest3Posts = latest5Posts.stream()
-                .limit(3).collect(Collectors.toList());
-        model.addAttribute("latest3Posts", latest3Posts);
+        Page<Post> posts = postService.findAllOrderedByDatePageable(page);
+        Pager pager = new Pager(posts);
 
-        return "index";
+        model.addAttribute("pager", pager);
+
+        return "/home";
     }
 }

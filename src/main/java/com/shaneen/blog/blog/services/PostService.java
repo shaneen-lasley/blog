@@ -1,17 +1,20 @@
 package com.shaneen.blog.blog.services;
 
 import com.shaneen.blog.blog.models.Post;
+import com.shaneen.blog.blog.models.User;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface PostService {
-    List<Post> findAll();
-    Page<Post> findAll(Pageable pageable);
-    List<Post> findLatest5();
-    Post findById(Long id);
-    Post create(Post post);
-    Post edit(Post post);
-    void deleteById(Long id);
+
+    Optional<Post> findForId(Long id);
+
+    Post save(Post post);
+
+    Page<Post> findByUserOrderedByDatePageable(User user, int page);
+
+    Page<Post> findAllOrderedByDatePageable(int page);
+
+    void delete(Post post);
 }

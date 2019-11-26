@@ -1,36 +1,55 @@
 package com.shaneen.blog.blog.models;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
 @Entity
-@Table(name="users")
+@Table(name = "user")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable = false, length = 30, unique = true)
-    @NotEmpty(message = "Please provide your UserName")
-    private String userName;
+    @Column(name = "email", unique = true, nullable = false)
+    @Email(message = "*Please provide a valid Email")
+    @NotEmpty(message = "*Please provide an email")
+    private String email;
 
-    @Column(length = 60)
-    @Length(min = 5, message = "Your password must contain at least 5 characters")
-    @NotEmpty(message = "Please provide your password")
-    private String passwordHash;
+    @Column(name = "password", nullable = false)
+    @Length(min = 5, message = "*Your password must have at least 5 characters")
+    @NotEmpty(message = "*Please provide your password")
+    @JsonIgnore
+    private String password;
 
-    @Column(length = 100)
-    @NotEmpty(message = "Please provide your full name")
-    private String fullName;
+    @Column(name = "username", nullable = false, unique = true)
+    @Length(min = 5, message = "*Your username must have at least 5 characters")
+    @NotEmpty(message = "*Please provide your name")
+    private String username;
 
-    @OneToMany(mappedBy = "author")
-    private Set<Post> posts = new HashSet<Post>();
+    @Column(name = "name")
+    @NotEmpty(message = "*Please provide your name")
+    private String name;
+
+    @Column(name = "last_name")
+    @NotEmpty(message = "*Please provide your last name")
+    private String lastName;
+
+    @Column(name = "active", nullable = false)
+    private int active;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Collection<Role> roles;
+
+    @OneToMany(mappedBy = "user")
+    private Collection<Post> posts;
 
     public Long getId() {
         return id;
@@ -40,51 +59,68 @@ public class User {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getPassword() {
+        return password;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getUsername() {
+        return username;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getName() {
+        return name;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Set<Post> getPosts() {
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
+
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Collection<Post> getPosts() {
         return posts;
     }
 
-    public void setPosts(Set<Post> posts) {
+    public void setPosts(Collection<Post> posts) {
         this.posts = posts;
     }
-    public User() {
-
-    }
-    public User(String userName, String fullName) {
-        this.userName = userName;
-        this.fullName = fullName;
-    }
-    public User(Long id, String userName, String fullName) {
-        this.id = id;
-        this.userName = userName;
-        this.fullName = fullName;
-    }
-    @Override
-    public String toString() {
-        return "User [id=" + id + ", userName=" + userName + ", passwordHash=" + passwordHash + ", fullName=" + fullName + "]";
-    }
 }
+
