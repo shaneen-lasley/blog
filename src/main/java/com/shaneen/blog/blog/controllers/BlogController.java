@@ -2,52 +2,30 @@ package com.shaneen.blog.blog.controllers;
 
 import com.shaneen.blog.blog.models.Post;
 import com.shaneen.blog.blog.models.User;
-import com.shaneen.blog.blog.services.PostService;
-import com.shaneen.blog.blog.services.UserService;
-import com.shaneen.blog.blog.util.Pager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Optional;
+import java.util.List;
 
 @Controller
-public class BlogController {
+public class BlogController extends AbstractController {
 
-    private final UserService userService;
+    @RequestMapping(value = "/")
+    public String index(Model model){
 
-    private final PostService postService;
-
-    @Autowired
-    public BlogController(UserService userService, PostService postService) {
-        this.userService = userService;
-        this.postService = postService;
+        List<User> users = userDao.findAll();
+        model.addAttribute("users", users);
+        return "index";
     }
 
-    @RequestMapping(value = "/blog/{username}", method = RequestMethod.GET)
-    public String blogForUsername(@PathVariable String username,
-                                  @RequestParam(defaultValue = "0") int page,
-                                  Model model) {
+    @RequestMapping(value = "/blog")
+    public String blogIndex(Model model) {
 
-        Optional<User> optionalUser = userService.findByUsername(username);
+        List<Post> posts = (List<Post>) postDao.findAll();
+        model.addAttribute("posts", posts);
 
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            Page<Post> posts = postService.findByUserOrderedByDatePageable(user, page);
-            Pager pager = new Pager(posts);
-
-            model.addAttribute("pager", pager);
-            model.addAttribute("user", user);
-
-            return "/posts";
-
-        } else {
-            return "/error";
-        }
+        return "blog";
     }
+
 }

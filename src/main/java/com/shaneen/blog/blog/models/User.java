@@ -1,126 +1,92 @@
 package com.shaneen.blog.blog.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.validator.constraints.Length;
+
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import java.util.Collection;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
-    private Long id;
-
-    @Column(name = "email", unique = true, nullable = false)
-    @Email(message = "*Please provide a valid Email")
-    @NotEmpty(message = "*Please provide an email")
-    private String email;
-
-    @Column(name = "password", nullable = false)
-    @Length(min = 5, message = "*Your password must have at least 5 characters")
-    @NotEmpty(message = "*Please provide your password")
-    @JsonIgnore
-    private String password;
-
-    @Column(name = "username", nullable = false, unique = true)
-    @Length(min = 5, message = "*Your username must have at least 5 characters")
-    @NotEmpty(message = "*Please provide your name")
     private String username;
+    private String pwHash;
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    @Column(name = "name")
-    @NotEmpty(message = "*Please provide your name")
-    private String name;
+    private List<Post> posts;
 
-    @Column(name = "last_name")
-    @NotEmpty(message = "*Please provide your last name")
-    private String lastName;
+    public User() {}
 
-    @Column(name = "active", nullable = false)
-    private int active;
+    public User(String username, String password) {
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Collection<Role> roles;
+        super();
 
-    @OneToMany(mappedBy = "user")
-    private Collection<Post> posts;
+        if (!isValidUsername(username)) {
+            throw new IllegalArgumentException("Invalid username");
+        }
 
-    public Long getId() {
-        return id;
+        this.username = username;
+        this.pwHash = hashPassword(password);
+
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @NotNull
+    @Column(name = "pwhash")
+    public String getPwHash() {
+        return pwHash;
     }
 
-    public String getPassword() {
-        return password;
+    @SuppressWarnings("unused")
+    private void setPwHash(String pwHash) {
+        this.pwHash = pwHash;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+    @NotNull
+    @Column(name = "username", unique = true)
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    private static String hashPassword(String password) {
+        return encoder.encode(password);
+    }
+
+    @SuppressWarnings("unused")
+    private void setUsername(String username) {
         this.username = username;
     }
 
-    public String getName() {
-        return name;
+    public boolean isMatchingPassword(String password) {
+        return encoder.matches(password, pwHash);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public static boolean isValidPassword(String password) {
+        Pattern validUsernamePattern = Pattern.compile("(\\S){6,20}");
+        Matcher matcher = validUsernamePattern.matcher(password);
+        return matcher.matches();
     }
 
-    public String getLastName() {
-        return lastName;
+    public static boolean isValidUsername(String username) {
+        Pattern validUsernamePattern = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]{4,11}");
+        Matcher matcher = validUsernamePattern.matcher(username);
+        return matcher.matches();
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    protected void addPost(Post post) {
+        posts.add(post);
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getActive() {
-        return active;
-    }
-
-    public void setActive(int active) {
-        this.active = active;
-    }
-
-    public Collection<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Collection<Role> roles) {
-        this.roles = roles;
-    }
-
-    public Collection<Post> getPosts() {
+    @OneToMany
+    @JoinColumn(name = "author_uid")
+    public List<Post> getPosts() {
         return posts;
     }
 
-    public void setPosts(Collection<Post> posts) {
+    public void setPosts(List<Post> posts) {
         this.posts = posts;
     }
-}
 
+}

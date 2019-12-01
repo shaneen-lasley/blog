@@ -1,92 +1,92 @@
 package com.shaneen.blog.blog.models;
 
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.validator.constraints.Length;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.xml.stream.events.Comment;
-import java.util.Collection;
 import java.util.Date;
 
 @Entity
 @Table(name = "post")
-public class Post {
+public class Post extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "post_id")
-    private Long id;
-
-    @Column(name = "title", nullable = false)
-    @Length(min = 5, message = "*Your title must have at least 5 characters")
-    @NotEmpty(message = "*Please provide title")
     private String title;
-
-    @Column(name = "body", columnDefinition = "TEXT")
     private String body;
+    private User author;
+    private Date created;
+    private Date modified;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_date", nullable = false, updatable = false)
-    @CreationTimestamp
-    private Date createDate;
+    public Post() {}
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    public Post(String title, String body, User author) {
+
+        super();
+
+        this.title = title;
+        this.body = body;
+        this.author = author;
+        this.created = new Date();
+        this.updated();
+
+        author.addPost(this);
+    }
+
+
     @NotNull
-    private User user;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private Collection<Comment> comments;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    @Column(name = "title")
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
+        this.updated();
     }
 
+    @NotNull
+    @Column(name = "body")
     public String getBody() {
         return body;
     }
 
     public void setBody(String body) {
         this.body = body;
+        this.updated();
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    @ManyToOne
+    public User getAuthor() {
+        return author;
     }
 
-    public void setCreateDate(Date date) {
-        this.createDate = date;
+    @SuppressWarnings("unused")
+    private void setAuthor(User author) {
+        this.author = author;
     }
 
-    public User getUser() {
-        return user;
+    @NotNull
+    @OrderColumn
+    @Column(name = "created")
+    public Date getCreated() {
+        return created;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    @SuppressWarnings("unused")
+    private void setCreated(Date created) {
+        this.created = created;
     }
 
-    public Collection<Comment> getComments() {
-        return comments;
+    @NotNull
+    @Column(name = "modified")
+    public Date getModified() {
+        return modified;
     }
 
-    public void setComments(Collection<Comment> comments) {
-        this.comments = comments;
+    @SuppressWarnings("unused")
+    private void setModified(Date modified) {
+        this.modified = modified;
     }
+
+    private void updated() {
+        this.modified = new Date();
+    }
+
 }
-
