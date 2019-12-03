@@ -1,94 +1,89 @@
 package com.shaneen.blog.blog.models;
 
-
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import javax.validation.constraints.NotEmpty;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "user")
-public class User extends AbstractEntity {
+@Table(name="users")
+public class User {
 
-    private String username;
-    private String pwHash;
-    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private List<Post> posts;
+    @Column(nullable = false, length = 30, unique = true)
+    @NotEmpty(message = "Please provide your User Name")
+    private String userName;
 
-    public User() {}
+    @Column(length = 60)
+    @Length(min = 5, message = "Your password must have at least 5 characters")
+    @NotEmpty(message = "Please provide your password")
+    private String passwordHash;
 
-    public User(String username, String password) {
+    @Column(length = 100)
+    @NotEmpty(message = "Please provide your full name")
+    private String fullName;
 
-        super();
+    @OneToMany(mappedBy = "author")
+    private Set<Post> posts = new HashSet<>();
 
-        if (!isValidUsername(username)) {
-            throw new IllegalArgumentException("Invalid username");
-        }
-
-        this.username = username;
-        this.pwHash = hashPassword(password);
-
+    public Long getId() {
+        return id;
     }
 
-    @NotNull
-    @Column(name = "pwhash")
-    public String getPwHash() {
-        return pwHash;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    @SuppressWarnings("unused")
-    private void setPwHash(String pwHash) {
-        this.pwHash = pwHash;
+    public String getUserName() {
+        return userName;
     }
 
-    @NotNull
-    @Column(name = "username", unique = true)
-    public String getUsername() {
-        return username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    private static String hashPassword(String password) {
-        return encoder.encode(password);
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    @SuppressWarnings("unused")
-    private void setUsername(String username) {
-        this.username = username;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
-    public boolean isMatchingPassword(String password) {
-        return encoder.matches(password, pwHash);
+    public String getFullName() {
+        return fullName;
     }
 
-    public static boolean isValidPassword(String password) {
-        Pattern validUsernamePattern = Pattern.compile("(\\S){6,20}");
-        Matcher matcher = validUsernamePattern.matcher(password);
-        return matcher.matches();
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
-    public static boolean isValidUsername(String username) {
-        Pattern validUsernamePattern = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]{4,11}");
-        Matcher matcher = validUsernamePattern.matcher(username);
-        return matcher.matches();
-    }
-
-    protected void addPost(Post post) {
-        posts.add(post);
-    }
-
-    @OneToMany
-    @JoinColumn(name = "author_uid")
-    public List<Post> getPosts() {
+    public Set<Post> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public void setPosts(Set<Post> posts) {
         this.posts = posts;
     }
+
+    public User(Long id, String userName, String fullName) {
+        this.id = id;
+        this.userName = userName;
+        this.fullName = fullName;
+    }
+
+    public User() {
+    }
+
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", userName=" + userName + ", passwordHash=" + passwordHash + ", fullName=" + fullName + "]";
+    }
+
 
 }

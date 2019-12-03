@@ -1,92 +1,83 @@
 package com.shaneen.blog.blog.models;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Table(name = "post")
-public class Post extends AbstractEntity {
+@Table(name = "posts")
+public class Post {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 300)
     private String title;
+
+    @Lob
+    @Column(nullable = false)
     private String body;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User author;
-    private Date created;
-    private Date modified;
 
-    public Post() {}
+    @Column(nullable = false)
+    private Date date = new Date();
 
-    public Post(String title, String body, User author) {
-
-        super();
-
-        this.title = title;
-        this.body = body;
-        this.author = author;
-        this.created = new Date();
-        this.updated();
-
-        author.addPost(this);
+    public Long getId() {
+        return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    @NotNull
-    @Column(name = "title")
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
-        this.updated();
     }
 
-    @NotNull
-    @Column(name = "body")
     public String getBody() {
         return body;
     }
 
     public void setBody(String body) {
         this.body = body;
-        this.updated();
     }
 
-    @ManyToOne
     public User getAuthor() {
         return author;
     }
 
-    @SuppressWarnings("unused")
-    private void setAuthor(User author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
-    @NotNull
-    @OrderColumn
-    @Column(name = "created")
-    public Date getCreated() {
-        return created;
+    public Date getDate() {
+        return date;
     }
 
-    @SuppressWarnings("unused")
-    private void setCreated(Date created) {
-        this.created = created;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    @NotNull
-    @Column(name = "modified")
-    public Date getModified() {
-        return modified;
+    public Post() {
     }
 
-    @SuppressWarnings("unused")
-    private void setModified(Date modified) {
-        this.modified = modified;
+    public Post(Long id, String title, String body, User author) {
+        this.id = id;
+        this.title = title;
+        this.body = body;
+        this.author = author;
     }
 
-    private void updated() {
-        this.modified = new Date();
+    @Override
+    public String toString() {
+        return "Post []";
     }
+
 
 }

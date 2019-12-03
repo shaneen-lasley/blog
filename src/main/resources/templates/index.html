@@ -1,18 +1,31 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org/">
-<head th:replace="template :: dochead">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout::head">
+    <title>Welcome to Shaneen's Blog</title>
 </head>
 <body>
+<header th:replace="layout::header"></header>
 
-<div th:replace="template :: navigation"></div>
+<aside>
+    <h2>Recent Posts</h2>
+    <a href="#" th:each="p : ${latest5Posts}" th:text="${p.title}" th:href="@{/posts/view/{id}/(id=${p.id})}">Work Begins Now</a>
+</aside>
 
-<h1>Blog users!</h1>
+<main id="posts">
+    <article th:each="p : ${latest3Posts}">
+        <h2 class="title" th:text="${p.title}">Post Title</h2>
+        <div class="date">
+            <i>Posted on</i>
+            <span th:text="${#dates.format(p.date, 'dd-MMM-yyyy')}">06-Nov-2019</span>
+            <span th:if="${p.author}" th:remove="tag">
+	          <i>by</i>
+	          <span th:text="${p.author.fullName != null ? p.author.fullName : p.author.userName}">Shaneen Lasley</span>
+	        </span>
+        </div>
+        <p class="content" th:utext="${p.body}">Post content</p>
+    </article>
+</main>
 
-
-<div th:each="user : ${users}">
-
-    <h2><a th:href="'/blog/' + ${user.username}" th:text="${user.username}"></a></h2>
-
-</div>
+<footer th:replace="layout::footer"></footer>
 </body>
 </html>
