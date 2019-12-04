@@ -40,7 +40,7 @@
         <div id="logged-in-info">
             <div sec:authorize="isAuthenticated()">
 					<span>Hello, <b sec:authentication="name"></b>
-						Roles: <span sec:authentication="principal.authorities"></span>
+						Users: <span sec:authentication="principal.authorities"></span>
 					</span>
                 <a ref="#" th:href="@{/users/logout}"><span class="fa fa-sign-out"></span>&nbsp;[Logout]</a>
             </div>
